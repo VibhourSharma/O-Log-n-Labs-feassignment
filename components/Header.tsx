@@ -1,42 +1,48 @@
 "use client";
-
-import { useEffect } from "react";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import localities from "./localities";
+import { fetchWeatherData } from "@/redux/weatherDataSlice";
 
 export default function Header() {
-  const fetchData = async () => {
-    try {
-      const response = await fetch(
-        "https://www.weatherunion.com/gw/weather/external/v0/get_locality_weather_data?locality_id=ZWL001156",
-        {
-          headers: {
-            "X-Zomato-Api-Key":
-              process.env.NEXT_PUBLIC_ZOMATO_WEATHER_API_KEY || "",
-          },
-        }
+  const [query, setQuery] = useState("");
+  const [suggestions, setSuggestions] = useState<Locality[]>([]);
+  const [selectedLocalityID, setSelectedLocalityID] = useState<string | null>(
+    null
+  );
+  const dispatch = useDispatch();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setQuery(value);
+
+    if (value) {
+      const filteredSuggestions = localities.filter((locality) =>
+        locality.localityName.toLowerCase().includes(value.toLowerCase())
       );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error("Error fetching weather data:", error);
+      setSuggestions(filteredSuggestions);
+    } else {
+      setSuggestions([]);
     }
   };
 
-  fetchData();
+  const handleSuggestionClick = (localityID: string, localityName: string) => {
+    setQuery(localityName);
+    setSuggestions([]);
+    setSelectedLocalityID(localityID);
+  };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const handleSearchButtonClick = () => {
+    if (selectedLocalityID) {
+      dispatch(fetchWeatherData(selectedLocalityID));
+    }
+  };
 
   return (
-    <div className="flex items-center justify-center text-xl text-white backdrop-blur-lg bg-[#ffffff34] rounded-b-lg">
+    <div className="flex items-center justify-around text-xl text-white backdrop-blur-lg bg-[#ffffff34] rounded-b-lg">
       <h1 className="p-4 font-bold">Weather 24/7</h1>
 
-      <div className="relative">
+      <div className="relative z-50">
         <label htmlFor="Search" className="sr-only">
           Search
         </label>
@@ -44,14 +50,37 @@ export default function Header() {
         <input
           type="text"
           id="Search"
-          placeholder="Search anything..."
+          value={query}
+          onChange={handleInputChange}
+          placeholder="Search city name..."
           className="w-full rounded-md py-2.5 px-4 pe-10 shadow-sm sm:text-sm bg-[#ffffff11] backdrop-blur-lg outline-none transition-all duration-200 focus:outline-[#ffffff90]"
         />
 
-        <span className="absolute inset-y-0 end-0 grid w-10 place-content-center">
+        {suggestions.length > 0 && (
+          <ul className="absolute z-50 w-full bg-gray-700 text-white text-base rounded-md shadow-lg max-h-60 overflow-auto">
+            {suggestions.map((locality) => (
+              <li
+                key={locality.localityID}
+                onClick={() =>
+                  handleSuggestionClick(
+                    locality.localityID,
+                    locality.localityName
+                  )
+                }
+                className="p-2 cursor-pointer hover:bg-gray-800"
+              >
+                {locality.localityName}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <span
+          onClick={handleSearchButtonClick}
+          className="absolute inset-y-0 end-0 grid w-10 place-content-center cursor-pointer"
+        >
           <button type="button" className="text-gray-200 hover:text-gray-300">
             <span className="sr-only">Search</span>
-
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
