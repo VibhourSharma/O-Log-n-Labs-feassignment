@@ -39,8 +39,8 @@ export default function Header() {
   };
 
   return (
-    <div className="flex items-center justify-around text-xl text-white backdrop-blur-lg bg-[#ffffff34] rounded-b-lg">
-      <h1 className="p-4 font-bold">Weather 24/7</h1>
+    <div className="flex items-center justify-around text-xl text-white backdrop-blur-lg bg-[#ffffff34] rounded-b-lg sm:p-2">
+      <h1 className="p-4 font-bold sm:hidden">Weather 33</h1>
 
       <div className="relative z-50">
         <label htmlFor="Search" className="sr-only">
@@ -53,7 +53,7 @@ export default function Header() {
           value={query}
           onChange={handleInputChange}
           placeholder="Search city name..."
-          className="w-full rounded-md py-2.5 px-4 pe-10 shadow-sm sm:text-sm bg-[#ffffff11] backdrop-blur-lg outline-none transition-all duration-200 focus:outline-[#ffffff90]"
+          className="w-full rounded-md py-2.5 text-sm px-4 pe-10 shadow-sm bg-[#ffffff11] backdrop-blur-lg outline-none transition-all duration-200 focus:outline-[#ffffff90]"
         />
 
         {suggestions.length > 0 && (
@@ -67,7 +67,7 @@ export default function Header() {
                     locality.localityName
                   )
                 }
-                className="p-2 cursor-pointer hover:bg-gray-800"
+                className="p-2 cursor-pointer hover:bg-gray-800 z-50"
               >
                 {locality.localityName}
               </li>

@@ -2,9 +2,9 @@
 import { useSelector } from "react-redux";
 
 const weatherDetails = [
-  { label: "Humidity", key: "humidity" },
-  { label: "Wind Speed", key: "wind_speed" },
-  { label: "Wind Direction", key: "wind_direction" },
+  { label: "Humidity %☁️", key: "humidity" },
+  { label: "Wind Speed m/s", key: "wind_speed" },
+  { label: "Wind Direction °", key: "wind_direction" },
 ];
 
 export default function WeatherExtraInfo() {
@@ -18,7 +18,7 @@ export default function WeatherExtraInfo() {
         <p className="text-2xl text-white font-bold">Weather Details</p>
       </div>
 
-      <div className="flex items-center justify-around text-xl text-white backdrop-blur-sm bg-[#ffffff34] rounded-b-lg w-[45rem] m-4 rounded-lg">
+      <div className="flex items-center justify-around text-xl text-white backdrop-blur-sm bg-[#ffffff34] rounded-b-lg  flex-wrap m-4 rounded-lg">
         {weatherDetails.map((detail) => (
           <div
             key={detail.key}
